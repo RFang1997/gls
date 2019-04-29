@@ -1,0 +1,20 @@
+[comment encoding = UTF-8 /]
+[module toLTL('http://simplepdl')]
+
+
+[template public toLTL(aProcess : Process)]
+[comment @main/]
+[file (aProcess.name, false, 'UTF-8')]
+op processus_fini = [for (wd : WorkDefinition | aProcess.processelement -> getWorkDefinitions())] [if (not(aProcess.processelement->getWorkDefinitions()->first()=wd))] /\ [/if][wd.name.concat('_finished')/][/for];
+['['/][']'/] (processus_fini => dead);
+['['/][']'/] <> dead;
+- <> processus_fini;
+
+[/file]
+[/template]
+
+[query public getWorkDefinitions(elements : OrderedSet(ProcessElements)) : OrderedSet(WorkDefinition) = 
+	elements->select( e | e.oclIsTypeOf(WorkDefinition) )
+		->collect( e | e.oclAsType(WorkDefinition) )
+		->asOrderedSet()
+/]

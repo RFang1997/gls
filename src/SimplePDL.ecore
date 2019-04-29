@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="simplepdl" nsURI="http://simplepdl" nsPrefix="simplepdl">
+  <eAnnotations source="http://www.eclipse.org/OCL/Import">
+    <details key="ecore" value="http://www.eclipse.org/emf/2002/Ecore"/>
+  </eAnnotations>
+  <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+    <details key="invocationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot"/>
+    <details key="settingDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot"/>
+    <details key="validationDelegates" value="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EEnum" name="WorkSequenceType">
+    <eLiterals name="startToStart"/>
+    <eLiterals name="finishToStart" value="1"/>
+    <eLiterals name="startToFinish" value="2"/>
+    <eLiterals name="finishToFinish" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Process">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="processelement" upperBound="-1"
+        eType="#//ProcessElements" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WorkDefinition" eSuperTypes="#//ProcessElements">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="uniquenames noEmptyName"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot">
+      <details key="uniquenames" value="self.Process.processelement&#xA;&#x9;&#x9;&#x9;-> select(e: ProcessElements | e.oclIsKindOf(WorkDefinition)) &#xA;&#x9;&#x9;&#x9;-> collect(e:ProcessElements | e.oclAsType(WorkDefinition))&#xA;&#x9;&#x9;&#x9;-> forAll(t1,t2 : WorkDefinition | t1 &lt;> t2 or t1.name = t2.name)"/>
+      <details key="noEmptyName" value="self.name.size()>0"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="linksToPredecessors" upperBound="-1"
+        eType="#//WorkSequence" eOpposite="#//WorkSequence/successor"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="linksToSuccessors" upperBound="-1"
+        eType="#//WorkSequence" eOpposite="#//WorkSequence/predecessor"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="allocation" eType="#//Allocation"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WorkSequence" eSuperTypes="#//ProcessElements">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore">
+      <details key="constraints" value="DepNonReflexive"/>
+    </eAnnotations>
+    <eAnnotations source="http://www.eclipse.org/emf/2002/Ecore/OCL/Pivot">
+      <details key="DepNonReflexive" value="self.successor &lt;> self.predecessor"/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="linkType" lowerBound="1"
+        eType="#//WorkSequenceType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="predecessor" lowerBound="1"
+        eType="#//WorkDefinition" eOpposite="#//WorkDefinition/linksToSuccessors"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="successor" lowerBound="1"
+        eType="#//WorkDefinition" eOpposite="#//WorkDefinition/linksToPredecessors"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Guidance" eSuperTypes="#//ProcessElements">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="text" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="processelement" eType="#//ProcessElements"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ProcessElements"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Ressource" eSuperTypes="#//ProcessElements">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="count" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Allocation">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="count" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ressource" eType="#//Ressource"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="workdefinition" eType="#//WorkDefinition"/>
+  </eClassifiers>
+</ecore:EPackage>

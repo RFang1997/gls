@@ -1,0 +1,11 @@
+import simplepdl : 'http://simplepdl'
+
+package simplepdl 
+
+context Ressource
+inv noEmptyName : name.size()>0
+
+context WorkSequence
+inv DepNonReflexive: self.successor <> self.predecessor
+
+endpackage
